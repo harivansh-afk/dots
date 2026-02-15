@@ -15,8 +15,6 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:"
 export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 
-export OPENAI_API_KEY="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"
-export GREPTILE_API_KEY="O2S8ucOfjNUFniRpm57U74eZBR2KAKliFLUmB6+tE4MojKtu"
 
 export PATH="/Users/rathi/.local/bin:$PATH"
 

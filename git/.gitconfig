@@ -28,6 +28,13 @@
 	old = red bold
 	new = green bold
 	whitespace = red reverse
+[delta]
+	syntax-theme = gruvbox-dark
+	hunk-header-style = omit
+	minus-style = syntax "#3c1f1e"
+	minus-emph-style = syntax "#72261d"
+	plus-style = syntax "#1d2c1d"
+	plus-emph-style = syntax "#2b4a2b"
 [push]
 	autoSetupRemote = true
 [diff-so-fancy]

@@ -15,6 +15,7 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 export MANPATH="/opt/homebrew/share/man${MANPATH+:$MANPATH}:"
 export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}"
 
+[[ -f ~/.secrets ]] && source ~/.secrets
 
 export PATH="/Users/rathi/.local/bin:$PATH"
 

@@ -1,4 +1,4 @@
-STOW_PACKAGES = zsh git nvim tmux karabiner ghostty claude
+STOW_PACKAGES = zsh git nvim tmux karabiner ghostty claude lazygit
 
 install:
 	brew install stow

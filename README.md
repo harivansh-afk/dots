@@ -8,3 +8,4 @@
 6. ghostty
 7. claude
 8. lazygit
+9. codex

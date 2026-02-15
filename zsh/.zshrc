@@ -183,6 +183,9 @@ export PATH="$HOME/.local/bin:$PATH"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
+# shortcut: wt create <branch> -> wt switch --create <branch>
+wtc() { wt switch --create "$@"; }
+
 # zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 bindkey '^k' forward-car

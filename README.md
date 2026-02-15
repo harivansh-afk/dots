@@ -7,3 +7,4 @@
 5. karabiner
 6. ghostty
 7. claude
+8. lazygit

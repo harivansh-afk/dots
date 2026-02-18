@@ -6,6 +6,7 @@
   "permissions": {
     "defaultMode": "default"
   },
+  "model": "sonnet",
   "hooks": {
     "PreToolUse": [
       {
@@ -68,5 +69,6 @@
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       }
     }
-  }
+  },
+  "effortLevel": "medium"
 }

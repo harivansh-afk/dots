@@ -1,5 +1,6 @@
 theme=Gruvbox Material Dark
 font-family = "Berkeley Mono"
+font-codepoint-map= "U+f101-U+f25c=nonicons"
 
 background-opacity = 1
 # background-blur = macos-glass-regular

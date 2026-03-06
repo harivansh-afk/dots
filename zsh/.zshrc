@@ -167,23 +167,82 @@ mdview() {
     markserv "$1"
 }
 
-. <(fzf --zsh)
-
-fzf-config-widget() {
-    file="$(FZF_CTRL_T_COMMAND="fd --type file --hidden . ~/.config | sed 's|$HOME|~|g'" __fzf_select | cut -c2-)"
-    LBUFFER+="$file"
-    zle reset-prompt
-}
-
-zle -N fzf-config-widget
-
-bindkey '^E' fzf-config-widget
 export PATH="$HOME/.local/bin:$PATH"
 
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
 # shortcut: wt create <branch> -> wt switch --create <branch>
 wtc() { wt switch --create "$@"; }
+
+# Interactive PR viewer with merge/close actions
+unalias gpr 2>/dev/null
+gpr() {
+    while true; do
+        local pr=$(gh pr list --limit 50 \
+            --json number,title,author,headRefName \
+            --template '{{range .}}#{{.number}} {{.title}} ({{.author.login}}) [{{.headRefName}}]{{"\n"}}{{end}}' \
+            | fzf --preview 'gh pr view {1} --comments' \
+                  --preview-window=right:60%:wrap \
+                  --header 'enter: view | ctrl-m: merge | ctrl-x: close | ctrl-o: checkout | ctrl-b: browser' \
+                  --bind 'ctrl-o:execute(gh pr checkout {1})' \
+                  --bind 'ctrl-b:execute(gh pr view {1} --web)' \
+                  --expect=ctrl-m,ctrl-x,enter)
+
+        [[ -z "$pr" ]] && return
+
+        local key=$(echo "$pr" | head -1)
+        local selection=$(echo "$pr" | tail -1)
+        local num=$(echo "$selection" | grep -o '#[0-9]*' | tr -d '#')
+
+        [[ -z "$num" ]] && return
+
+        case "$key" in
+            ctrl-m)
+                echo "Merge PR #$num? (y/n)"
+                read -q && gh pr merge "$num" --merge
+                echo
+                ;;
+            ctrl-x)
+                echo "Close PR #$num? (y/n)"
+                read -q && gh pr close "$num"
+                echo
+                ;;
+            enter|"")
+                gh pr view "$num"
+                ;;
+        esac
+    done
+}
+
+# Branch out unpushed commits (or staged changes) and create PR to main
+ghpr() {
+    local base=$(git rev-parse --abbrev-ref HEAD)
+    local upstream=${1:-main}
+
+    local unpushed=$(git log "$upstream"..HEAD --oneline 2>/dev/null)
+
+    if [[ -z "$unpushed" ]]; then
+        if git diff --cached --quiet; then
+            echo "No unpushed commits and no staged changes"
+            return 1
+        fi
+        echo "No unpushed commits, but staged changes found. Opening commit dialog..."
+        git commit || return 1
+    fi
+
+    # Derive branch name from first unpushed commit message
+    local msg=$(git log "$upstream"..HEAD --format='%s' --reverse | head -1)
+    local branch=$(echo "$msg" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+
+    git checkout -b "$branch"
+    git checkout "$base"
+    git reset --hard "$upstream"
+    git checkout "$branch"
+
+    git push -u origin "$branch"
+    gh pr create --base "$upstream" --fill --web 2>/dev/null || gh pr create --base "$upstream" --fill
+    gh pr view "$branch" --json url -q '.url'
+}
 
 # zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh

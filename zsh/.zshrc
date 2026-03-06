@@ -219,7 +219,8 @@ ghpr() {
     local base=$(git rev-parse --abbrev-ref HEAD)
     local upstream=${1:-main}
 
-    local unpushed=$(git log "$upstream"..HEAD --oneline 2>/dev/null)
+    local remote_ref="origin/$upstream"
+    local unpushed=$(git log "$remote_ref"..HEAD --oneline 2>/dev/null)
 
     if [[ -z "$unpushed" ]]; then
         if git diff --cached --quiet; then
@@ -231,12 +232,12 @@ ghpr() {
     fi
 
     # Derive branch name from first unpushed commit message
-    local msg=$(git log "$upstream"..HEAD --format='%s' --reverse | head -1)
+    local msg=$(git log "$remote_ref"..HEAD --format='%s' --reverse | head -1)
     local branch=$(echo "$msg" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
 
     git checkout -b "$branch"
     git checkout "$base"
-    git reset --hard "$upstream"
+    git reset --hard "$remote_ref"
     git checkout "$branch"
 
     git push -u origin "$branch"

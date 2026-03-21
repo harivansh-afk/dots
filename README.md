@@ -1,3 +1,7 @@
+> [!WARNING]
+> **This repository has been deprecated.**
+> All configuration has moved to [harivansh-afk/nix](https://github.com/harivansh-afk/nix).
+
 ## Hari's Dotfiles [macOS]
 
 1. zsh

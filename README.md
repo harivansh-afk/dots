@@ -1,6 +1,6 @@
 > [!WARNING]
 > **This repository has been deprecated.**
-> All configuration has moved to [harivansh-afk/nix](https://github.com/harivansh-afk/nix).
+> All configuration has moved to [harivansh-afk/nix](https://git.harivan.sh/harivansh-afk/nix).
 
 ## Hari's Dotfiles [macOS]
 
